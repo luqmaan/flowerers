@@ -1,0 +1,10 @@
+{
+  "name": "flowerers",
+  "dependencies": {
+    "d3": "~3.4.11",
+    "argjs": "~1.1.0",
+    "requirejs": "~2.1.14",
+    "requirejs-domready": "~2.0.1",
+    "when": "~3.4.2"
+  }
+}
