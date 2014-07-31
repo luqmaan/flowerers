@@ -19,7 +19,7 @@ function(Arg, when) {
                     },
                     status: req.status,
                     headers: headers,
-                    links: parseLinks(headers),
+                    links: parseLinkHeader(headers.link),
                     body: null
                 };
 
@@ -48,32 +48,51 @@ function(Arg, when) {
     }
 
     function parseHeaders(headerStr) {
-        var result = {};
-
-        window.h = headerStr;
+        var parsed = {};
 
         headerStr
             .split('\n')
-            .forEach(function(h) {
-                var split = h.split(':'),
-                    k = split[0],
-                    v = split[1];
+            .forEach(function(line) {
+                var i = line.indexOf(':'),
+                    k = line.substr(0, i),
+                    v = line.substr(i + 1);
 
                 if (!!k) {
-                    k = k.trim();
+                    k = k.trim().toLowerCase();
                     v = v.trim();
 
-                    result[k] = v;
+                    parsed[k] = v;
                 }
             });
 
-        return result;
+        return parsed;
     }
 
-    function parseLinks(headers) {
-        if (headers.Link) {
+    function parseLinkHeader(linkStr) {
+        // Copypasta + pesto from https://github.com/jfromaniello/parse-links/blob/master/lib/index.js
+        var parsed = {},
+            entries = linkStr.split(','),
+            relsRegExp = /\brel="?([^"]+)"?\s*;?/,
+            keysRegExp = /(\b[0-9a-z\.-]+\b)/g,
+            sourceRegExp = /^<(.*)>/;
 
+        for (var i = 0; i < entries.length; i++) {
+            var entry = entries[i].trim(),
+                rels = relsRegExp.exec(entry);
+
+            if (rels) {
+                var keys = rels[1].match(keysRegExp),
+                    source = sourceRegExp.exec(entry)[1],
+                    kLength = keys.length,
+                    k;
+
+                for (k = 0; k < kLength; k += 1) {
+                    parsed[keys[k]] = source;
+                }
+            }
         }
+
+        return parsed;
     }
 
     return request;
