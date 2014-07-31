@@ -11,14 +11,15 @@ function(Arg, when) {
         req.open(options.method, url, true);
 
         req.onload = function() {
-            var result = {
+            var headers = parseHeaders(req.getAllResponseHeaders()),
+                result = {
                     request: {
                         options: options,
                         url: url
                     },
                     status: req.status,
-                    headers: parseHeaders(req.getAllResponseHeaders()),
-                    links: null,
+                    headers: headers,
+                    links: parseLinks(headers),
                     body: null
                 };
 
@@ -46,20 +47,33 @@ function(Arg, when) {
         return deferred.promise;
     }
 
-    function parseHeaders(headers) {
+    function parseHeaders(headerStr) {
         var result = {};
 
-        headers
+        window.h = headerStr;
+
+        headerStr
             .split('\n')
-            .each(function(h) {
+            .forEach(function(h) {
                 var split = h.split(':'),
                     k = split[0],
                     v = split[1];
 
-                result[k] = v;
+                if (!!k) {
+                    k = k.trim();
+                    v = v.trim();
+
+                    result[k] = v;
+                }
             });
 
         return result;
+    }
+
+    function parseLinks(headers) {
+        if (headers.Link) {
+
+        }
     }
 
     return request;
