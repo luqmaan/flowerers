@@ -54,7 +54,13 @@ function(domReady, d3, jsnx, when, GitHub) {
                 'stroke-width': 2,
                 'stroke': 'rgb(253,246,227)',
                 'fill': 'rgb(253,246,227)'
+            },
+            node_style: {
+                'fill': 'rgba(0,0,0,0)',
+                'stroke-width': 0
             }
-        });
+        }, true);
     };
+
+
 });
