@@ -3,5 +3,4 @@ flowerers
 
 Visualize how your GitHub followers are connected to eachother
 
-![](https://cloud.githubusercontent.com/assets/1275831/3787064/f5e28368-19fa-11e4-9a83-1a93f06c34fc.png)
-
+![](https://cloud.githubusercontent.com/assets/1275831/3787872/c10432a2-1a3d-11e4-8b6c-423d26215b6f.png)
