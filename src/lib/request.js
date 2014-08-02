@@ -72,6 +72,8 @@ function(Arg, when) {
 
     function parseLinkHeader(linkStr) {
         // Copypasta + pesto from https://github.com/jfromaniello/parse-links/blob/master/lib/index.js
+        if (!linkStr) return {};
+
         var parsed = {},
             entries = linkStr.split(','),
             relsRegExp = /\brel="?([^"]+)"?\s*;?/,

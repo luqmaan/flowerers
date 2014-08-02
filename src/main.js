@@ -1,5 +1,5 @@
-define(['domReady', 'd3', 'jsnx', 'GitHub'],
-function(domReady, d3, jsnx, GitHub) {
+define(['domReady', 'd3', 'jsnx', 'when', 'GitHub'],
+function(domReady, d3, jsnx, when, GitHub) {
     domReady(function() {
         var accessToken = localStorage.getItem('flowerers:github:access_token'),
             username = localStorage.getItem('flowerers:github:username'),
@@ -7,26 +7,54 @@ function(domReady, d3, jsnx, GitHub) {
 
         github.followers(username)
             .then(function(followers) {
-                window.f = followers;
-                var nodes = followers.map(function(u) { return u.login; });
-                drawGraph(nodes);
+                var promises = followers.map(function(u) {
+                    return github.followers(u.login)
+                        .then(function(fol) {
+                            if (fol.length < 50) {
+                                // hcilab
+                                updateGraph(u.login, fol.map(function(u) { return u.login; }));
+                            }
+                        });
+                });
+
+                updateGraph(username, followers.map(function(u) { return u.login; }));
+
+                when.all(promises)
+                    .then(function() {
+                        drawGraph();
+                    })
+                    .catch(function(e) {
+                        console.error(e);
+                    });
             })
             .catch(function(e) {
                 console.error(e);
             });
     });
 
-    function drawGraph(nodes) {
-        var G = jsnx.Graph();
-        G.add_nodes_from(nodes);
-        jsnx.draw(G, {
-            element: '#canvas',
-            with_labels: true,
-            weighted: true,
-            edge_style: {
-                'stroke-width': 10
-            }
+    var G = window.G = jsnx.Graph();
+    window.jsnx = jsnx;
+
+    function updateGraph(centerNode, edgeNodes) {
+
+        G.add_nodes_from(centerNode);
+        G.add_nodes_from(edgeNodes);
+
+        edgeNodes.forEach(function(edgeNode) {
+            G.add_edges_from([[centerNode, edgeNode]]);
         });
     }
 
+    var drawGraph = window.drawGraph = function(argument) {
+        jsnx.draw(G, {
+            element: '#canvas',
+            with_labels: true,
+            weighted: false,
+            edge_style: {
+                'stroke-width': 2,
+                'stroke': 'rgb(253,246,227)',
+                'fill': 'rgb(253,246,227)'
+            }
+        });
+    };
 });
