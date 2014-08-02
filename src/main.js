@@ -29,7 +29,7 @@ function(domReady, when, Graph, GitHub) {
         var accessToken = localStorage.getItem('flowerers:github:access_token'),
             originalGangster = localStorage.getItem('flowerers:github:username'),
             github = new GitHub(accessToken),
-           graph = window.graph = new Graph();
+            graph = window.graph = new Graph();
 
         github.followers(originalGangster)
             .then(function(followers) {
