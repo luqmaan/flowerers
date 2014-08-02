@@ -29,6 +29,23 @@ function(domReady, d3, jsnx, when, GitHub) {
             .catch(function(e) {
                 console.error(e);
             });
+
+        github.following(originalGangster)
+            .then(function(following) {
+                var promises = following.map(function(u) {
+                    return github.following(u.login)
+                        .then(function(fol) {
+                            if (fol.length < 200) {
+                                var logins = fol.map(function(u) { return u.login; }),
+                                    login = u.login;
+                                updateGraph(login, logins);
+                            }
+                        });
+                });
+            })
+            .catch(function(e) {
+                console.error(e);
+            });
     });
 
     var G = window.G = jsnx.Graph();
