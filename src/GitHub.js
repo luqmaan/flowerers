@@ -6,6 +6,7 @@ define('GitHub', ['when', 'lib/request'],
 
         GitHub.prototype.followers = function(username, page) {
             var deferred = when.defer(),
+                _followers = localStorage.getItem('flowerers:github:followers:' + username),
                 followers = [],
                 req = {
                     method: 'GET',
@@ -16,17 +17,35 @@ define('GitHub', ['when', 'lib/request'],
                     }
                 };
 
-            request(req)
-                .then(function(res) {
-                    console.log(res);
-                    window.res = res;
-                    deferred.resolve(followers);
-                })
-                .catch(function(e) {
-                    window.res = e;
-                    console.error(e);
-                    deferred.reject(e);
-                });
+            function fetch() {
+                request(req)
+                    .then(function(res) {
+                        followers = followers.concat(res.body);
+
+                        if (res.links.next) {
+                            req.params.page += 1;
+                            fetch();
+                        }
+                        else {
+                            localStorage.setItem('flowerers:github:followers:' + username, JSON.stringify(followers));
+                            deferred.resolve(followers);
+                        }
+                    })
+                    .catch(function(e) {
+                        console.error(e);
+                        deferred.reject(e);
+                    });
+            }
+
+
+            if (_followers) {
+                console.debug('followers cache hit', username);
+                deferred.resolve(_followers);
+            }
+            else {
+                console.debug('followers cache miss', username);
+                fetch();
+            }
 
             return deferred.promise;
         };

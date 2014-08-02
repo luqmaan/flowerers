@@ -6,7 +6,7 @@ function(Arg, when) {
             req = new XMLHttpRequest(),
             deferred = when.defer();
 
-        console.log(options, options.method, '=>',  url);
+        console.log(options.method, '=>',  url);
 
         req.open(options.method, url, true);
 
@@ -29,6 +29,7 @@ function(Arg, when) {
             catch (e) {
                 result.body = req.responseText;
             }
+            console.log(options.method, '=>',  url, '=>', result);
 
             if (req.status >= 200 && req.status < 400) {
                 deferred.resolve(result);
@@ -39,6 +40,7 @@ function(Arg, when) {
         };
 
         req.onerror = function(e) {
+            console.error(e);
             deferred.reject(e);
         };
 
