@@ -6,7 +6,7 @@ define('GitHub', ['when', 'lib/request'],
 
         GitHub.prototype.followers = function(username, page) {
             var deferred = when.defer(),
-                _followers = localStorage.getItem('flowerers:github:followers:' + username),
+                _followers = JSON.parse(localStorage.getItem('flowerers:github:followers:' + username)),
                 followers = [],
                 req = {
                     method: 'GET',
