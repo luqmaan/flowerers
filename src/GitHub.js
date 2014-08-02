@@ -73,7 +73,7 @@ define('GitHub', ['when', 'lib/request'],
                 _following = JSON.parse(localStorage.getItem('flowerers:github:following:' + username)),
                 req;
 
-            return deferred.resolve(_following);
+            return when.resolve(_following);
 
             if (_following) {
                 console.debug('following cache hit', username);
