@@ -74,7 +74,7 @@ function(d3, jsnx) {
     };
 
     Graph.prototype.draw = function(centerNode) {
-        this.G.remove_nodes_from([centerNode]);
+        // this.G.remove_nodes_from([centerNode]);
         this.removeSpamNodes();
         this.removeWeakNodes(2);
         this.removeWeakNodes(1);
@@ -83,13 +83,13 @@ function(d3, jsnx) {
             element: '#canvas',
             with_labels: true,
             weighted: false,
+            edge_offset: 300,
             label_style: {
                 fill: 'rgb(9,24,76)',
             },
             edge_style: {
-                stroke: 'rgb(172,178,198)',
                 fill: 'rgb(172,178,198)',
-                'stroke-width': 2,
+                'stroke-width': 5,
             },
             node_style: {
                 fill: 'rgba(0,0,0,0)',

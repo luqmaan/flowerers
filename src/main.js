@@ -60,6 +60,7 @@ function(domReady, when, Graph, GitHub) {
 
         github.followers(originalGangster)
             .then(function(followers) {
+                graph.addAdjacentNodes(originalGangster, followers);
                 return followers.map(function(u) {
                     return github.followers(u.login)
                         .then(function(flowerers) {
@@ -74,7 +75,7 @@ function(domReady, when, Graph, GitHub) {
                 return when.all(promises);
             })
             .tap(function() {
-                toast();
+                toast(originalGangster + '\'s Followers');
                 graph.draw(originalGangster);
             })
             .catch(function(e) {
