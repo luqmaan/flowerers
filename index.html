@@ -20,6 +20,7 @@
             margin: auto;
             position: absolute;
             visibility: hidden;
+            display: none;
         }
         #nav {
             width: 100%;
@@ -46,13 +47,16 @@
             margin: auto;
             width: 600px;
         }
+        h1 {
+            margin-bottom: 1.3em;
+        }
         input, button {
             font-size: 1.7em;
             margin: 1em 0;
             width: 100%;
             text-align: center;
             display: block;
-            padding: 0.5em;
+            padding: 0.5em 0;
         }
         button {
             background-color: rgb(190,217,196);
@@ -63,6 +67,15 @@
             background-color: rgb(210,228,214);
             transition: background-color 0.5s;
         }
+        label {
+            text-align: left;
+            float: left;
+            margin: 5px;
+        }
+        .wat {
+            text-align: right;
+            float: right;
+        }
     </style>
 </head>
 <body>
@@ -72,7 +85,10 @@
     <div id="main">
         <div class="wrapper">
             <h1>GitHub Flowerers</h1>
+            <label for="username">Any GitHub Username</label>
             <input type="text" id="username" placeholder="username">
+            <label for="username">GitHub API Personal Access Token</label>
+            <a class="wat" href="https://github.com/blog/1509-personal-api-tokens">lolwut</a>
             <input type="text" id="token" placeholder="personal access token">
             <button id="visualize">Visualize Followers</button>
         </div>

@@ -24,6 +24,7 @@ function(domReady, when, Graph, GitHub) {
 
             document.getElementById('main').hidden = true;
             document.getElementById('canvas').style.visibility = "visible";
+            document.getElementById('canvas').style.display = "block";
 
             visualize();
         };
@@ -61,9 +62,9 @@ function(domReady, when, Graph, GitHub) {
             .then(function(followers) {
                 return followers.map(function(u) {
                     return github.followers(u.login)
-                        .then(function(fol) {
+                        .then(function(flowerers) {
                             toast('Loaded ' + u.login);
-                            var logins = fol.map(function(u) { return u.login; }),
+                            var logins = flowerers.map(function(u) { return u.login; }),
                                 login = u.login;
                             graph.addAdjacentNodes(login, logins);
                         });
@@ -85,6 +86,10 @@ function(domReady, when, Graph, GitHub) {
                 }
                 else if (e.message) {
                     msg = e.message;
+                }
+                else if (e.body && e.body.message) {
+                    // github api
+                    msg = e.body.message;
                 }
                 else if (typeof e === Object) {
                     msg = JSON.stringify(e);
