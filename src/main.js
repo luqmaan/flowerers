@@ -77,8 +77,19 @@ function(domReady, when, Graph, GitHub) {
                 graph.draw(originalGangster);
             })
             .catch(function(e) {
-                toast(JSON.stringify(e));
+                var msg = e;
                 console.error(e);
+
+                if (typeof e === String) {
+                    msg = e;
+                }
+                else if (e.message) {
+                    msg = e.message;
+                }
+                else if (typeof e === Object) {
+                    msg = JSON.stringify(e);
+                }
+                toast(msg);
             });
     }
 

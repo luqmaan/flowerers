@@ -32,17 +32,50 @@ function(d3, jsnx) {
                 break;
             }
 
-            console.log(node[0], node[1]);
             if (node[1] < min) {
                 weakNodes.push(node[0]);
             }
         }
 
+        console.log('Removing weak nodes', weakNodes);
         this.G.remove_nodes_from(weakNodes);
+    };
+
+    Graph.prototype.removeSpamNodes = function() {
+        var iter = this.G.nodes_iter(),
+            spamNodes = [],
+            inDeg,
+            outDeg,
+            ratio,
+            node;
+
+        while (true) {
+            try {
+                node = iter.next();
+            }
+            catch(e) {
+                if (e.message !== 'StopIteration') {
+                    throw e;
+                }
+                break;
+            }
+            inDeg = this.G.in_degree(node);
+            outDeg = this.G.out_degree(node);
+            ratio =  Math.max(inDeg, 1) / Math.max(outDeg, 1);
+
+            if (ratio < 0.03) {
+                console.log(node, ratio, outDeg);
+                spamNodes.push(node);
+            }
+        }
+
+        console.log('Removing spammy nodes', spamNodes);
+        this.G.remove_nodes_from(spamNodes);
     };
 
     Graph.prototype.draw = function(centerNode) {
         this.G.remove_nodes_from([centerNode]);
+        this.removeSpamNodes();
         this.removeWeakNodes(2);
         this.removeWeakNodes(1);
 
