@@ -1,5 +1,7 @@
 define(['domReady', 'when', 'Graph', 'GitHub'],
 function(domReady, when, Graph, GitHub) {
+    var TOAST_INTERVAL = 2000;
+
     domReady(function() {
         var $username = document.getElementById('username'),
             $token = document.getElementById('token'),
@@ -11,19 +13,41 @@ function(domReady, when, Graph, GitHub) {
         $token.value = _token;
 
         $visualize.onclick = function() {
+            toast();
             if (!$username.value || !$token.value) {
-                alert('Username or token missing');
+                toast('Username or token is missing', true);
                 return;
             }
+
             localStorage.setItem('flowerers:github:username', $username.value);
             localStorage.setItem('flowerers:github:access_token', $token.value);
 
-            document.getElementById('nav').hidden = true;
+            document.getElementById('main').hidden = true;
             document.getElementById('canvas').style.visibility = "visible";
+
             visualize();
         };
 
     });
+
+    function toast(msg) {
+        var $nav = document.getElementById('nav'),
+            $toast = document.getElementById('toast');
+
+        function untoast() {
+            $nav.style.top = '-500px';
+            $toast.innerHTML = null;
+        }
+
+        if (msg) {
+            console.log('msg', msg);
+            $nav.style.top = 0;
+            $toast.innerHTML = msg;
+        }
+        else {
+            untoast();
+        }
+    }
 
     function visualize() {
         var accessToken = localStorage.getItem('flowerers:github:access_token'),
@@ -31,29 +55,29 @@ function(domReady, when, Graph, GitHub) {
             github = new GitHub(accessToken),
             graph = window.graph = new Graph();
 
+        toast('Loading...');
+
         github.followers(originalGangster)
             .then(function(followers) {
-                var promises = followers.map(function(u) {
+                return followers.map(function(u) {
                     return github.followers(u.login)
                         .then(function(fol) {
+                            toast('Loaded ' + u.login);
                             var logins = fol.map(function(u) { return u.login; }),
                                 login = u.login;
                             graph.addAdjacentNodes(login, logins);
                         });
                 });
-
-                return promises;
             })
             .then(function(promises) {
                 return when.all(promises);
             })
-            .then(function() {
-                console.log('all');
-                alert('all');
+            .tap(function() {
+                toast();
                 graph.draw(originalGangster);
             })
             .catch(function(e) {
-                alert(JSON.stringify(e));
+                toast(JSON.stringify(e));
                 console.error(e);
             });
     }

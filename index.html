@@ -23,21 +23,36 @@
         }
         #nav {
             width: 100%;
-            padding: 1em 0;
             margin: auto;
+            font-size: 1.5em;
+            position: absolute;
+            top: -500px;
+            background-color: rgba(200,201,208, 0.9);
+            color: rgb(21,37,82);
+            transition: top 0.3s;
+            z-index: 100;
         }
         #nav .wrapper {
+            padding: 1em;
+            text-align: center;
+        }
+        #main {
+            width: 100%;
+            padding: 2em 0;
+            margin: auto;
+        }
+        #main .wrapper {
             text-align: center;
             margin: auto;
             width: 600px;
         }
         input, button {
-            height: 2em;
-            font-size: 2em;
+            font-size: 1.7em;
             margin: 1em 0;
             width: 100%;
             text-align: center;
             display: block;
+            padding: 0.5em;
         }
         button {
             background-color: rgb(190,217,196);
@@ -52,6 +67,9 @@
 </head>
 <body>
     <div id="nav">
+        <div class="wrapper"><h3 id="toast"></h3></div>
+    </div>
+    <div id="main">
         <div class="wrapper">
             <h1>GitHub Flowerers</h1>
             <input type="text" id="username" placeholder="username">
