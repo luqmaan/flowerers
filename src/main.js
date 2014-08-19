@@ -60,7 +60,7 @@ function(domReady, when, Graph, GitHub) {
 
         github.followers(originalGangster)
             .then(function(followers) {
-                graph.addAdjacentNodes(originalGangster, followers);
+                // graph.addAdjacentNodes(originalGangster, followers);
                 return followers.map(function(u) {
                     return github.followers(u.login)
                         .then(function(flowerers) {

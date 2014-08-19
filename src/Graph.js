@@ -74,7 +74,7 @@ function(d3, jsnx) {
     };
 
     Graph.prototype.draw = function(centerNode) {
-        // this.G.remove_nodes_from([centerNode]);
+        this.G.remove_nodes_from([centerNode]);
         this.removeSpamNodes();
         this.removeWeakNodes(2);
         this.removeWeakNodes(1);
